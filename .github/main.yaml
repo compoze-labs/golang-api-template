@@ -1,0 +1,65 @@
+---
+name: Pipeline
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch: null
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Use Golang ${{ matrix.node-version }}
+        uses: actions/setup-go@v3
+        with:
+          go-version: '^1.19.1'
+      - run: go build .
+  test:
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - uses: actions/checkout@v3
+      - name: Use Golang ${{ matrix.node-version }}
+        uses: actions/setup-go@v3
+        with:
+          go-version: '^1.19.1'
+      - run: go test
+  deploynonprod:
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+    needs: test
+    steps:
+      - uses: actions/checkout@v3
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          role-to-assume: arn:aws:iam::{{AWS_ACCOUNT_ID}}:role/CompozeAutomationRole
+          aws-region: {{AWS_REGION}}
+      - name: Use Golang ${{ matrix.node-version }}
+        uses: actions/setup-go@v3
+        with:
+          go-version: '^1.19.1'
+      - name: Deploy nonprod
+        run: make deploy ENVIRONMENT=nonprod
+  deployprod:
+    runs-on: ubuntu-latest
+    permissions:
+      id-token: write
+      contents: read
+    needs: deploynonprod
+    steps:
+      - uses: actions/checkout@v3
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          role-to-assume: arn:aws:iam::{{AWS_ACCOUNT_ID}}:role/CompozeAutomationRole
+          aws-region: {{AWS_REGION}}
+      - name: Use Golang ${{ matrix.node-version }}
+        uses: actions/setup-go@v3
+        with:
+          go-version: '^1.19.1'
+      - name: Deploy prod
+        run: make deploy ENVIRONMENT=prod
