@@ -1,1 +1,1 @@
-# golang-api-template
+# {{COMPOZE_SERVICE_NAME}}
