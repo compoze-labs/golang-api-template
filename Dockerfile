@@ -17,6 +17,6 @@ WORKDIR /usr/src
 
 COPY --from=builder /usr/src/go_api/go_api /usr/src/go_api
 
-EXPOSE 3000
+EXPOSE 5000
 
 CMD ./go_api

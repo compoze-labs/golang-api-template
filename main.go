@@ -19,7 +19,7 @@ func main() {
 	router.GET("/", handler)
 
 	fmt.Println("Go REST service started...")
-	router.Run("0.0.0.0:3000")
+	router.Run("0.0.0.0:5000")
 }
 
 func handler(ctx *gin.Context) {
