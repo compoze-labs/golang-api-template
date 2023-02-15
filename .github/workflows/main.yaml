@@ -25,7 +25,7 @@ jobs:
         with:
           go-version: "^1.19.1"
       - run: go test
-  deploynonprod:
+  deploy-nonprod:
     runs-on: ubuntu-latest
     permissions:
       id-token: write
@@ -44,12 +44,12 @@ jobs:
           go-version: "^1.19.1"
       - name: Deploy nonprod
         run: make deploy ENVIRONMENT=nonprod
-  deployprod:
+  deploy-production:
     runs-on: ubuntu-latest
     permissions:
       id-token: write
       contents: read
-    needs: deploynonprod
+    needs: deploy-nonprod
     steps:
       - uses: actions/checkout@v3
       - name: Configure AWS Credentials
@@ -61,5 +61,5 @@ jobs:
         uses: actions/setup-go@v3
         with:
           go-version: "^1.19.1"
-      - name: Deploy prod
-        run: make deploy ENVIRONMENT=prod
+      - name: Deploy production
+        run: make deploy ENVIRONMENT=production
