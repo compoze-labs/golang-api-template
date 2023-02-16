@@ -1,5 +1,5 @@
 ---
-name: Pipeline
+name: API
 on:
   push:
     branches:
