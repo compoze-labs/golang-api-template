@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"net/http"
+	"os"
 	"strings"
 
 	"github.com/gin-gonic/gin"
@@ -23,9 +24,10 @@ func main() {
 }
 
 func handler(ctx *gin.Context) {
-	name := ctx.DefaultQuery("name", "World")
+	environment := os.Getenv("Environment")
+
 	msg := Msg{
-		Message: fmt.Sprintf("Hello %s!", strings.TrimSpace(name)),
+		Message: fmt.Sprintf("Hello %s!", strings.TrimSpace(environment)),
 	}
 
 	ctx.JSON(http.StatusOK, msg)
