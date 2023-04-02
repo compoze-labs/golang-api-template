@@ -8,7 +8,11 @@ CONTAINER=$3
 ENV=$4
 TAG=$5
 
-ENV_CONTAINER="${CONTAINER}-${ENV}"
 
-docker tag "${CONTAINER}":"${TAG}" "${AWS_ACCOUNT_ID}.dkr.ecr.${REGION}.amazonaws.com/${ENV_CONTAINER}:latest"
-docker push "${AWS_ACCOUNT_ID}.dkr.ecr.${REGION}.amazonaws.com/${ENV_CONTAINER}:latest"
+IMAGE="${CONTAINER}:${TAG}"
+REPOSITORY="${ECR_REPOSITORY_URL}:${TAG}"
+
+echo "retagging image ${IMAGE} for registry ${REPOSITORY}"
+docker tag "${IMAGE}" "${REPOSITORY}"
+echo "pushing $REPOSITORY ..."
+docker push "$REPOSITORY"
