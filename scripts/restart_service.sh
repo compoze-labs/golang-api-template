@@ -7,8 +7,7 @@ STAGE=$2
 echo "creating deployment for ${ECS_CLUSTER_NAME}"
 
 
-output=$(aws ecs update-service --cluster ${ECS_CLUSTER_NAME} --service ${ECS_SERVICE_NAME} --force-new-deployment 2>&1)
-echo "${output}" | jq ".service.taskDefinition"
+aws ecs update-service --cluster ${ECS_CLUSTER_NAME} --service ${ECS_SERVICE_NAME} --force-new-deployment
 
 echo "waiting for deployment to become stable"
 aws ecs wait services-stable --cluster ${ECS_CLUSTER_NAME} --service "${ECS_SERVICE_NAME}"
